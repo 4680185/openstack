@@ -1,0 +1,16 @@
+---
+- hosts: heketi
+  roles:
+     - role: set_heketi
+
+- hosts: glusterfs
+  tasks:
+    - name: glusterfs trust heketi server 
+      copy: src=/tmp/heketi_key.pub dest=/tmp/
+    - name:  Set authorized key taken from file /tmp/heketi_key.pub
+      authorized_key: user=root state=present key="{{ lookup('file', '/tmp/heketi_key.pub') }}"
+
+- hosts: heketi
+  tasks:
+    - name: load toplogy file
+      shell: heketi-cli --server http://127.0.0.1:8080 topology load --json=/etc/heketi/topology.json "
