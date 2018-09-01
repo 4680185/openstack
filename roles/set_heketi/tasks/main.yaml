@@ -1,0 +1,39 @@
+---
+- name: install heketi server software
+  yum: name=heketi state=present
+
+- name: update heketi server software and install heketi-cli
+  copy: src={{ item }} dest=/usr/bin/  owner=root group=root  mode=0755
+  with_items:
+    - heketi
+    - heketi-cli
+
+- name: copy heketi.json file to heketi serve
+  copy: src=heketi.json  dest=/etc/heketi/heketi.json owner=root group=root mode=0644
+
+- name: make topology  for heketi
+  template: src=topology.json.j2 dest=/etc/heketi/topology.json owner=root group=root mode=0644
+
+#- name: start heketi  service
+#  systemd: name=heketi state=started enabled=yes masked=no
+
+- name: Find /etc/heketi files [heketi_key,heketi_key.pub]
+  find: paths=/etc/heketi patterns='heketi_key*'
+  register: result
+
+- name: print result
+  debug: msg="{{ result }}"
+  when: result.matched != 2
+
+- name: generate pubkey and private key ofheketi server 
+  shell: ssh-keygen -f /etc/heketi/heketi_key -t rsa -N ''
+  when: result.matched != 2
+
+- name: modify the owner of the /etc/heketi/heketi_key
+  file: path=/etc/heketi/ owner=heketi group=heketi recurse=yes
+  when: result.matched != 2
+
+- name: Store /etc/heketi/heketi_key into /tmp/heketi_key
+  fetch: src=/etc/heketi/heketi_key.pub dest=/tmp/ flat=yes
+
+

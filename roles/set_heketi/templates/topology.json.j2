@@ -1,0 +1,60 @@
+{
+    "clusters": [
+        {
+            "nodes": [
+{% for hosts in glusterfs_work_ip %}
+{% if not loop.last %}
+                {
+                    "node": {
+                        "hostnames": {
+                            "manage": [
+                                "{{ hosts }}"
+                            ],
+                            "storage": [
+                                "{{ hosts }}"
+                            ]
+                        },
+                        "zone": 1
+                    },
+                    "devices": [
+{% for disk in glusterfs_raw_disk %}
+{% if not loop.last %}
+                       "{{ disk }}",
+{% endif %}
+{% if loop.last %}
+                       "{{ disk }}"
+{% endif %}
+{% endfor %}
+                    ]
+                },
+{% endif %}
+{% if loop.last %}
+                {
+                    "node": {
+                        "hostnames": {
+                            "manage": [
+                                "{{ hosts }}"
+                            ],
+                            "storage": [
+                                "{{ hosts }}"
+                            ]
+                        },
+                        "zone": 1
+                    },
+                    "devices": [
+{% for disk in glusterfs_raw_disk %}
+{% if not loop.last %}
+                       "{{ disk }}",
+{% endif %}
+{% if loop.last %}
+                       "{{ disk }}"
+{% endif %}
+{% endfor %}
+                    ]
+                }
+{% endif %}
+{% endfor %}
+            ]
+        }
+    ]
+}

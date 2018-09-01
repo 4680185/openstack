@@ -1,0 +1,3 @@
+---
+glusterfs_work_ip: ['1.1.1.1','2.2.2.2']
+glusterfs_raw_disk: ['/dev/sdi','/dev/sdk']
