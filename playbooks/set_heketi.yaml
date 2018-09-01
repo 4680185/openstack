@@ -1,7 +1,7 @@
 ---
 - hosts: heketi
   roles:
-     - role: set_heketi
+    - role: set_heketi
 
 - hosts: glusterfs
   tasks:
@@ -13,4 +13,4 @@
 - hosts: heketi
   tasks:
     - name: load toplogy file
-      shell: heketi-cli --server http://127.0.0.1:8080 topology load --json=/etc/heketi/topology.json "
+      shell: heketi-cli --server http://127.0.0.1:8080 topology load --json=/etc/heketi/topology.json 
