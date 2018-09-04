@@ -49,9 +49,8 @@ heketi_docker_disk=sda
 10.1.34.120
 
 [ntpdserver]
-10.1.34.120
-[ntpdserver:vars]
-ansible_ssh_port=22022
+192.168.18.8
+
 
 
 [dnsserver]

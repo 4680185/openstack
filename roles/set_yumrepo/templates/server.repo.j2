@@ -1,0 +1,10 @@
+{% for repoid in repoids %}
+
+[{{ repoid }}]
+name={{ repoid }}  
+baseurl=http://{{ groups['fileserver'] | join( ) }}/{{ repopath }}/{{ repoid }}
+enable=1
+gpgcheck=0
+
+{% endfor %}
+
