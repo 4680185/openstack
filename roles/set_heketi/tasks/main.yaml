@@ -3,10 +3,10 @@
   yum: name=heketi state=present
 
 - name: copy heketi.json file to heketi serve
-  copy: src=../files/etc/heketi/heketi.json  dest=/etc/heketi/heketi.json owner=root group=root mode=0644
+  copy: src=etc/heketi/heketi.json  dest=/etc/heketi/heketi.json owner=root group=root mode=0644
 
 - name: make topology  for heketi
-  template: src=../files/etc/heketi/topology.json.j2 dest=/etc/heketi/topology.json owner=root group=root mode=0644
+  template: src=etc/heketi/topology.json.j2 dest=/etc/heketi/topology.json owner=root group=root mode=0644
 
 - name: copy heketi.service to /usr/lib/systemd/system/heketi.service
   copy: src=heketi.service dest=/usr/lib/systemd/system/heketi.service owner=root group=root mode=0644
