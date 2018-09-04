@@ -2,17 +2,11 @@
 - name: install heketi server software
   yum: name=heketi state=present
 
-- name: update heketi server software and install heketi-cli
-  copy: src={{ item }} dest=/usr/bin/  owner=root group=root  mode=0755
-  with_items:
-    - heketi
-    - heketi-cli
-
 - name: copy heketi.json file to heketi serve
-  copy: src=heketi.json  dest=/etc/heketi/heketi.json owner=root group=root mode=0644
+  copy: src=./etc/heketi/heketi.json  dest=/etc/heketi/heketi.json owner=root group=root mode=0644
 
 - name: make topology  for heketi
-  template: src=topology.json.j2 dest=/etc/heketi/topology.json owner=root group=root mode=0644
+  template: src=./etc/heketi/topology.json.j2 dest=/etc/heketi/topology.json owner=root group=root mode=0644
 
 - name: copy heketi.service to /usr/lib/systemd/system/heketi.service
   copy: src=heketi.service dest=/usr/lib/systemd/system/heketi.service owner=root group=root mode=0644
