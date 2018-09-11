@@ -1,0 +1,8 @@
+---
+- name: goto infra.yaml
+  import_tasks: infra.yaml
+  when: inventory_hostname not in groups['nodes']
+
+- name: goto nodes.yaml
+  import_tasks: nodes.yaml
+  when: inventory_hostname in groups['nodes']

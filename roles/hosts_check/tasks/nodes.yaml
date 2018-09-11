@@ -1,0 +1,37 @@
+---
+- name: check the selinux=enforcing
+  shell: cat /etc/selinux/config  | grep -v '^#' | grep -w SELINUX
+  register: selinux
+
+- name: exit the playbook because selinux != enforcing
+  fail: msg="server {{ inventory_hostname }} conf selinux != enforcing is not ok "
+  when: selinux.stdout != "SELINUX=enforcing"
+
+- name: print the server selinux=disable is ok
+  debug: msg="the server {{ inventory_hostname }} conf SELINUX=enforcing  is ok"
+  when: selinux.stdout == "SELINUX=enforcing"
+
+- name: check the runtime selinux
+  shell: getenforce
+  register: getenforce
+
+- name: exit the playbook because runtime selinux != enforcing
+  fail: msg="server {{ inventory_hostname }} runtime selinux != enforcing is not ok "
+  when: getenforce.stdout != "Enforcing"
+
+- name: print the server runtime selinux=enforcing is ok
+  debug: msg="the server {{ inventory_hostname }} runtime SELINUX=enforcing  is ok"
+  when: getenforce.stdout == "Enforcing"
+
+- name: check firewalld status
+  shell: systemctl status firewalld
+  register: firewalld
+  ignore_errors: true
+
+- name: exit the playbook because firewalld is not ok 
+  fail: msg=" server {{ inventory_hostname }} firewalld process is not ok"
+  when: firewalld.rc != 0
+
+- name: print firewalld process is ok 
+  debug: msg="server {{ inventory_hostname }} firewalld process is ok "
+  when: firewalld.rc == 0
