@@ -1,0 +1,9 @@
+---
+ - hosts: etcd
+   roles:
+      - { role: hosts_check, when: inventory_hostname not in groups.master }
+      - { role: set_yumrepo, when: inventory_hostname not in groups.master }
+      - { role: set_chronyd, when: inventory_hostname not in groups.master }
+      - { role: docker_check, when: inventory_hostname not in groups.master }
+      - { role: set_docker, when: inventory_hostname not in groups.master }
+      - { role: set_etcd, when: inventory_hostname not in groups.master }
