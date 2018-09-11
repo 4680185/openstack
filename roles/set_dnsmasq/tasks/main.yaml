@@ -1,0 +1,22 @@
+---
+- name: yum install dnsmasq for internal name resolution
+  yum: name=dnsmasq state=present
+
+- name: setting configure file of dnsmasq
+  template: src=origin-dns.conf.j2 dest=/etc/dnsmasq.d/origin-dns.conf  mode=0644 owner=root group=root force=yes
+  notify: 
+    - restart dnsmasq
+
+- name: mkdir /etc/dnsmasq.d/record/
+  file: path=/etc/dnsmasq.d/record/ state=directory owner=root group=root mode=0755
+
+- name: copy the hostdomain record to /etc/dnsmasq.d/record/
+  template: src=hostdomain.j2  dest=/etc/dnsmasq.d/record/hostdomain  mode=0644 owner=root group=root 
+  notify: 
+    - restart dnsmasq
+
+- name: configure  firewalld policy
+  firewalld: port=53/tcp permanent=true state=enabled immediate=true
+
+- name: configure firewalld policy
+  firewalld: port=53/udp permanent=true state=enabled immediate=true

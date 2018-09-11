@@ -1,0 +1,5 @@
+{% for node in groups.nodes %}
+{% if not loop.last %}{{ node }}    {{ hostvars[node]['hostname'] }}.{{ host_domain }}
+{% endif %}
+{% if loop.last %}{{ node }}    {{ hostvars[node]['hostname'] }}.{{ host_domain }}{% endif  %}
+{% endfor %}

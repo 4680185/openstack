@@ -1,0 +1,16 @@
+no-resolv
+no-hosts
+domain-needed
+no-negcache
+max-cache-ttl=1
+enable-dbus
+dns-forward-max=5000
+cache-size=5000
+listen-address={{ inventory_hostname }}
+server=/{{ host_domain }}/{{ inventory_hostname }}
+address=/{{ cluster_domain }}/{{ cluster_vip }}
+{% for ip in router_vip %}
+address=/{{ app_domain }}/{{ ip }}
+{% endfor %}
+server=114.114.114.114
+addn-hosts=/etc/dnsmasq.d/record/hostdomain
