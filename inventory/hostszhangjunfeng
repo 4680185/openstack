@@ -26,7 +26,6 @@ harbor_docker_disk=sda
 harborsoftwarepath=download/harbor1.5
 harborsoftware=harbor-offline-installer-v1.5.1.tgz
 upsteamdns=10.1.34.120
-containerized=false
 docker_disk=sda
 masters_public_ip=202.80.192.47
 masters_public_interface=bond0.85
@@ -39,8 +38,8 @@ routers_private_ip=192.168.51.23
 routers_private_interface=bond2.2601
 
 
-raw_disk=['sdb','sdc','sdd','sde']
-heketi_docker_disk=sda
+glusterfs_raw_disk=['/dev/sdb']
+
 [fileserver]
 10.1.34.120
 
