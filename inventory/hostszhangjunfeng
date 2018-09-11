@@ -52,8 +52,12 @@ glusterfs_raw_disk=['/dev/sdb']
 #ansible_ssh_port=22022
 
 [nodes:children]
+etcd
 master
-
+[etcd]
+192.168.18.6   hostname=master1  docker_disk=sdb
+192.168.18.7   hostname=master2  docker_disk=sdb
+192.168.18.9   hostname=master3  docker_disk=sdb
 
 [master]
 192.168.18.6   hostname=master1  docker_disk=sdb
