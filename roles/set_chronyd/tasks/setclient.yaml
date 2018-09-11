@@ -1,0 +1,7 @@
+---
+- name: set client upstream chrony server 
+  template: src=client.chrony.conf.j2 dest=/etc/chrony.conf mode=0644 owner=root group=root
+
+- name: restart chronyd server
+  systemd: name=chronyd state=restarted enabled=yes masked=no
+

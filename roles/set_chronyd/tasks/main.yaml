@@ -8,29 +8,11 @@
 - name: start chronyd server
   systemd: name=chronyd state=started enabled=yes masked=no
 
-- name: set upstream ntpserver 
-  template: src=upstream.chrony.conf.j2 dest=/etc/chrony.conf mode=0644 owner=root group=root
-  when: upstream is defined
+- name: go to chronyd server configure
+  import_tasks: setserver.yaml
+  when: inventory_hostname in groups['chronyd']
 
-- name: excute the ping 114.114.114.114 command
-  shell: ping -c 2  114.114.114.114
-  register: ping
-  ignore_errors: true
-  when: upstream is not defined
+- name: go to chronyd client configure
+  import_tasks: setclient.yaml
+  when: inventory_hostname not in groups['chronyd']
 
-- name: set upstream server to 127.0.0.1
-  copy: src=local.chrony.conf dest=/etc/chrony.conf mode=0644 owner=root group=root
-  when: upstream is not defined and ping.rc != 0
-
-- name: modify the nameserver to 114.114.114.114
-  copy: src=resolv.conf dest=/etc/resolv.conf mode=0644 owner=root group=root force=yes 
-  when: upstream is not defined and ping.rc == 0
-
-- name: restart chronyd server
-  systemd: name=chronyd state=restarted enabled=yes masked=no
-
-- name: configure  firewalld policy
-  firewalld: port={{ item }} permanent=true state=enabled immediate=true
-  with_items:
-    - 123/tcp
-    - 123/udp

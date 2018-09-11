@@ -1,0 +1,30 @@
+---
+- name: set upstream server 
+  template: src=upstream.chrony.conf.j2 dest=/etc/chrony.conf mode=0644 owner=root group=root
+  when: upstream is defined
+
+- name: excute the ping 114.114.114.114 command
+  shell: ping -c 2  114.114.114.114
+  register: ping
+  ignore_errors: true
+  when: upstream is not defined
+
+- name: set upstream server to 127.0.0.1
+  copy: src=local.chrony.conf dest=/etc/chrony.conf mode=0644 owner=root group=root
+  when: upstream is not defined and ping.rc != 0
+
+- name: modify the nameserver to 114.114.114.114
+  copy: src={{ item }} dest=/etc/ mode=0644 owner=root group=root force=yes 
+  with_items:
+    - resolv.conf
+    - chrony.conf
+  when: upstream is not defined and ping.rc == 0
+
+- name: restart chronyd server
+  systemd: name=chronyd state=restarted enabled=yes masked=no
+
+- name: configure  firewalld policy
+  firewalld: port={{ item }} permanent=true state=enabled immediate=true
+  with_items:
+    - 123/tcp
+    - 123/udp
