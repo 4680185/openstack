@@ -1,0 +1,7 @@
+---
+- hosts: glusterfs
+  roles:
+#    - role: hosts_check
+#    - role: set_yumrepo
+#    - role: set_chronyd
+    - role: set_glusterfs
