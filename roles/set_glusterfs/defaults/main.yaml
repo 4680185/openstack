@@ -1,12 +1,8 @@
 glusterfs_packages: [
-#  glusterfs-3.8.4-52.el7rhgs.x86_64,
-#  glusterfs-fuse-3.8.4-52.el7rhgs.x86_64,
-#  glusterfs-rdma-3.8.4-52.el7rhgs.x86_64,
-#  glusterfs-server-3.8.4-52.el7rhgs.x86_64
-  glusterfs,
-  glusterfs-fuse,
-  glusterfs-rdma,
-  glusterfs-server
+  glusterfs-3.8.4-52.el7rhgs.x86_64,
+  glusterfs-fuse-3.8.4-52.el7rhgs.x86_64,
+  glusterfs-rdma-3.8.4-52.el7rhgs.x86_64,
+  glusterfs-server-3.8.4-52.el7rhgs.x86_64
 ]
 
 glusterfs_firewalld_ports: [

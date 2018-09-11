@@ -17,16 +17,15 @@ cluster_domain=cluster-ha-vip.caas.beiqijia.dc
 cluster_vip=192.168.18.22
 app_domain=beiqijia.tae.ctyun.cn
 router_vip=["192.168.18.100"]
-
 dc_name=["caas","beiqijia","dc"]
-
 
 
 harbor_docker_disk=sda
 harborsoftwarepath=download/harbor1.5
 harborsoftware=harbor-offline-installer-v1.5.1.tgz
 upsteamdns=10.1.34.120
-docker_disk=sda
+
+
 masters_public_ip=202.80.192.47
 masters_public_interface=bond0.85
 masters_private_ip={{ cluster_vip }}
@@ -53,32 +52,14 @@ glusterfs_raw_disk=['/dev/sdb']
 #ansible_ssh_port=22022
 
 [nodes:children]
-lb
-etcd
 master
-node
 
-[lb]
-192.168.51.2   hostname=cluster-ha1 priority=101 state=MASTER
-192.168.51.15  hostname=cluster-ha2 priority=100 state=BACKUP
-[etcd]
-192.168.51.3   hostname=master1
-192.168.51.11  hostname=master2
-192.168.51.17  hostname=master3
 
 [master]
-192.168.51.3   hostname=master1
-192.168.51.11  hostname=master2
-192.168.51.17  hostname=master3
+192.168.18.6   hostname=master1  docker_disk=sdb
+192.168.18.7   hostname=master2  docker_disk=sdb
+192.168.18.9   hostname=master3  docker_disk=sdb
 
-[node]
-192.168.51.6   hostname=node1
-192.168.51.7   hostname=node2
-192.168.51.8   hostname=node3
-192.168.51.13  hostname=node4
-192.168.51.14  hostname=node5
-192.168.51.19  hostname=node6
-192.168.51.20  hostname=node7
 
 [ldapserver]
 192.168.51.1
