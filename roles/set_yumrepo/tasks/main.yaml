@@ -1,0 +1,14 @@
+---
+- name: delete directory /etc/yum.repos.d/
+  file: path=/etc/yum.repos.d/ state=absent
+
+- name: create directory /etc/yum.repos.d/
+  file: path=/etc/yum.repos.d/ state=directory owner=root group=root mode=0755
+
+- name: copy server.repo.j2 to {{ inventory_hostname }} 
+  template: src=server.repo.j2  dest=/etc/yum.repos.d/server.repo mode=0644 owner=root group=root force=yes
+  when: inventory_hostname not in groups['fileserver']
+
+- name: copy local.repo to {{ inventory_hostname }} 
+  template: src=local.repo.j2 dest=/etc/yum.repos.d/local.repo  mode=0644 owner=root group=root force=yes
+  when: inventory_hostname  in groups['fileserver']

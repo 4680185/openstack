@@ -1,0 +1,20 @@
+---
+- name: get the status of var-lib-docker.mount
+  shell: systemctl status var-lib-docker.mount | grep -E "Active:|Where:|What:" | awk '{print $2}'
+  register: dockermount
+  ignore_errors: true
+
+- name: print dockermount info
+  debug: msg="{{ dockermount.stdout_lines }}"
+
+- name: the docker storage is ok or not ok 
+  debug: msg="the server {{ inventory_hostname }} docker storage is ok "
+  when: dockermount.stdout_lines == ["active","/var/lib/docker","/dev/mapper/docker--vg-docker--lv"]
+
+- name: started docker service
+  systemd: name=docker state=started masked=no enabled=yes 
+  when: dockermount.stdout_lines == ["active","/var/lib/docker","/dev/mapper/docker--vg-docker--lv"]
+
+- name: go to docker-storage-setup.yaml
+  import_tasks: step1_1.docker_storage_setup.yaml
+  when: dockermount.stdout_lines != ["active","/var/lib/docker","/dev/mapper/docker--vg-docker--lv"]

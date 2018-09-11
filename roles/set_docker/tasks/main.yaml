@@ -1,0 +1,24 @@
+---
+- name: yum install docker software
+  yum:  name=docker state=present
+
+- name: get the size of device {{ docker_disk }}
+  set_fact: device_size={{ ansible_devices.get(docker_disk).get("size",0) | regex_replace('GB')|int }}
+
+- name: check the dockervg  is exist or not
+  set_fact: dockervg="{{ ansible_lvm.get("vgs",0).get("docker-vg",0) }}"
+
+- name: print dockervg
+  debug: msg={{ dockervg }}
+  
+- name: go step1.use_exsit_dockervg.yaml
+  import_tasks: step1.use_exsit_dockervg.yaml
+  when: dockervg != '0'
+
+- name: go to step2.entire_disk_docker.yaml
+  import_tasks: step2.entire_disk_docker.yaml
+  when: dockervg == '0'  and not ansible_devices.get( docker_disk ).get("partitions")
+
+- name: go to step3.part_disk_docker.yaml
+  import_tasks: step3.part_disk_docker.yaml
+  when:  dockervg == '0'  and ansible_devices.get( docker_disk ).get("partitions")

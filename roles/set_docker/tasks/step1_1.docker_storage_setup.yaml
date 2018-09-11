@@ -1,0 +1,24 @@
+---
+- name: get the size of dockervg
+  set_fact: dockervg_size="{{ ansible_lvm.get("vgs").get("docker-vg").get("size_g") | int }}"
+
+- name: stop docker service 
+  systemd: name=docker state=stopped masked=no enabled=yes
+
+- name: umount /var/lib/docker 
+  mount: path=/var/lib/docker state=unmounted
+
+- name: delete dir /var/lib/docker
+  file: path=/var/lib/docker state=absent 
+
+- name: copy file docker-storage-setup with "dev={{ docker_disk }}" option  to  host {{ inventory_hostname }}
+  template: src=docker-storage-setup.j2 dest=/etc/sysconfig/docker-storage-setup mode=0644 owner=root group=root 
+  when: dockervg_size == device_size
+
+- name: copy file docker-storage-setup without "dev={{ docker_disk }}" dev option  to host {{ inventory_hostname }}
+  copy: src=docker-storage-setup dest=/etc/sysconfig/docker-storage-setup mode=0644 owner=root group=root
+  when: dockervg_size != device_size
+
+- name: started docker service
+  systemd: name=docker state=restarted masked=no enabled=yes 
+

@@ -1,0 +1,18 @@
+---
+- name: get the type of Partition Table  msdos or gpt
+  parted: device=/dev/{{ docker_disk }} unit=GB
+  register: disk_info
+
+- name: set a var partition_type  to identified the type of Partition Table
+  set_fact: partition_type="{{ disk_info.disk.table }}"
+
+- name: print partition_type
+  debug: msg="{{ partition_type }}"
+
+- name: go to step4.part_gpt_disk_docker.yaml
+  import_tasks: step4.part_gpt_disk_docker.yaml
+  when: partition_type == "gpt" 
+
+- name: go to step5.part_msdos_disk_docker.yaml
+  import_tasks: step5.part_msdos_disk_docker.yaml
+  when: partition_type == "msdos"

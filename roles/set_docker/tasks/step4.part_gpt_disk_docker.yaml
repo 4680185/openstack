@@ -1,0 +1,46 @@
+---
+- name: exec the command to get the partions
+  shell: parted /dev/{{ docker_disk }} print
+  register: partion_info
+  
+- name: print the partion_info
+  debug: msg="{{ partion_info.stdout_lines[-1].strip() | regex_replace('\s+',',' ) }}"
+
+- name: set the variable tmp to store the value of {{ partion_info.stdout_lines[-1].strip() | regex_replace('\s+',',' ) }}
+  set_fact: tmp={{ partion_info.stdout_lines[-1].strip() | regex_replace('\s+',',' ) }}
+
+- name: print the tmp
+  debug: msg="{{ tmp.split(',')[2]|regex_replace('GB') }}"
+
+- name: get the used size of {{ docker_disk }}
+  set_fact: used_size={{ tmp.split(',')[2]|regex_replace('GB') }}
+
+- name: print the used_size
+  debug: msg="{{ used_size }}"
+
+- name: Calculate netxt partions number of {{ docker_disk }}
+  set_fact: next_partions_num={{ tmp.split(',')[0] |int + 1 }}
+
+- name: check the netxt partions number
+  debug: msg="{{ next_partions_num }}"
+
+- name: create parition on disk /dev/{{ docker_disk }}
+  parted: device=/dev/{{docker_disk}} number={{ next_partions_num }} flags=lvm part_start={{ used_size }}GB unit=GB state=present label=gpt name=docker
+
+- name: create docker-vg on harbor host
+  lvg: vg=docker-vg pvs=/dev/{{ docker_disk }}{{ next_partions_num }}
+
+- name: stop docker service 
+  systemd: name=docker state=stopped masked=no enabled=yes
+
+- name: umount /var/lib/docker 
+  mount: path=/var/lib/docker state=unmounted
+
+- name: delete dir /var/lib/docker
+  file: path=/var/lib/docker state=absent 
+
+- name: copy file docker-storage-setup without "dev={{ docker_disk }}" dev option  to host {{ inventory_hostname }}
+  copy: src=docker-storage-setup dest=/etc/sysconfig/docker-storage-setup mode=0644 owner=root group=root
+
+- name: started docker service
+  systemd: name=docker state=restarted masked=no enabled=yes 

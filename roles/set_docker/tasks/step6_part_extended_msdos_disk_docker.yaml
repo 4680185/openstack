@@ -1,0 +1,31 @@
+---
+- name: get the start size of next partion
+  set_fact: start_size="{{ tmp_str.split(',')[1] }}"
+
+- name: print the start size
+  debug: msg="{{ start_size }}"
+
+- name: create parition on disk /dev/{{ docker_disk }}
+  parted: device=/dev/{{docker_disk}} number={{ next_partions_num }} flags=lvm part_start={{ start_size }} unit=GB state=present label=msdos  part_type=logical 
+
+
+- name: print
+  debug: msg="{{ [ next_partions_num |int ,5 ] | max }}"
+
+- name: create docker-vg on node host
+  lvg: vg=docker-vg pvs=/dev/{{ docker_disk }}{{ [ next_partions_num|int ,5 ] | max }}
+
+- name: stop docker service
+  systemd: name=docker state=stopped masked=no enabled=yes
+
+- name: umount /var/lib/docker
+  mount: path=/var/lib/docker state=unmounted
+
+- name: delete dir /var/lib/docker
+  file: path=/var/lib/docker state=absent
+
+- name: copy file docker-storage-setup without "dev={{ docker_disk }}" dev option  to host {{ inventory_hostname }}
+  copy: src=docker-storage-setup dest=/etc/sysconfig/docker-storage-setup mode=0644 owner=root group=root
+
+- name: started docker service
+  systemd: name=docker state=started masked=no enabled=yes

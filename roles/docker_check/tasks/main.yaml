@@ -1,0 +1,11 @@
+---
+- name: check the device {{ docker_disk }} is exist or not
+  set_fact: device={{ ansible_devices.get( docker_disk ,0) }}
+
+- name: exit the ansible playbook because the host do not have device {{ docker_disk }}
+  fail: msg="because the {{ inventory_hostname }} do not have device {{ docker_disk }}"
+  when: device == "0"
+
+- name: print the server {{ docker_disk }} is ok
+  debug: msg="the server {{ inventory_hostname }} {{ docker_disk }}   is ok"
+  when: device != "0"

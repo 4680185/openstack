@@ -1,0 +1,8 @@
+[main]
+dns=default
+
+[global-dns]
+searches={{ host_domain }}
+
+[global-dns-domain-*]
+servers={{ groups['dnsmasq']|first }}

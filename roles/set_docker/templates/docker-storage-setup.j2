@@ -1,0 +1,8 @@
+STORAGE_DRIVER=overlay2
+DEVS="/dev/{{ docker_disk }}"
+CONTAINER_ROOT_LV_NAME=docker-lv
+CONTAINER_ROOT_LV_SIZE=100%FREE
+CONTAINER_ROOT_LV_MOUNT_PATH=/var/lib/docker
+VG=docker-vg
+SETUP_LVM_THIN_POOL=yes
+

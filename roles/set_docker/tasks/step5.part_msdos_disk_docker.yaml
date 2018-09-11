@@ -1,0 +1,38 @@
+---
+- name: exec the command to get the partions
+  shell: parted /dev/{{ docker_disk }} print
+  register: partion_info
+  
+- name: print the partion_info
+  debug: msg="{{ partion_info.stdout_lines[-1].strip() | regex_replace('\s+',',' ) }}"
+
+- name: set variable tmp_str to store the value of {{ partion_info.stdout_lines[-1].strip() | regex_replace('\s+',',' ) }}
+  set_fact: tmp_str={{ partion_info.stdout_lines[-1].strip() | regex_replace('\s+',',' ) }}
+
+- name: get the partion type of last partion 
+  set_fact: last_partion_type="{{ tmp_str.split(',')[4] }}"
+
+- name: print the value of last_partion_type
+  debug: msg="{{ last_partion_type }}"
+
+- name: Calculate netxt partions number of {{ docker_disk }}
+  set_fact: next_partions_num={{ tmp_str.split(',')[0] |int + 1 }}
+
+- name: check the netxt partions number
+  debug: msg="{{ next_partions_num }}"
+
+- name: there are already four  primary  partions 
+  fail: msg="there are four  primary  partions  we can not create more than four primary partion in msdos label disk"
+  when: next_partions_num >= '5' and last_partion_type == 'primary'
+
+- name: go to step6_part_primary_msdos_disk_docker.yaml
+  import_tasks: step6_part_primary_msdos_disk_docker.yaml
+  when: last_partion_type == 'primary' and next_partions_num <= '4'
+
+- name: got to step6_part_extended_msdos_disk_docker.yaml
+  import_tasks: step6_part_extended_msdos_disk_docker.yaml
+  when: last_partion_type == 'extended'
+
+- name: go to step6_part_logical_msdos_disk_docker.yaml
+  import_tasks: step6_part_logical_msdos_disk_docker.yaml
+  when: last_partion_type == 'logical'
