@@ -1,0 +1,36 @@
+- name: start NetworkManager  server
+  systemd: name=NetworkManager state=started enabled=yes masked=no
+
+
+- name: delete directory /etc/NetworkManager/conf.d/
+  file: path=/etc/NetworkManager/conf.d/ state=absent
+
+- name: create directory /etc/NetworkManager/conf.d/
+  file: path=/etc/NetworkManager/conf.d/ state=directory owner=root group=root mode=0755
+
+- name: install dnsmasq  the openshift hosts
+  yum: name=dnsmasq  state=present
+
+- name: copy NetworkManager conf upstreamdns.conf.j2 to /etc/NetworkManager/conf.d/
+  template: src=upstreamdns.conf.j2 dest=/etc/NetworkManager/conf.d/upstreamdns.conf mode=0644 owner=root group=root
+  notify:
+    - restart NetworkManager
+    - restart dnsmasq
+
+- name: Modify hostname of the machine
+  hostname: name={{ hostname }}.{{ host_domain }}
+
+- name: install base packages on the remote hosts
+  yum: name={{ item }} state=present
+  with_items:
+    - wget 
+    - git 
+    - net-tools 
+    - bind-utils 
+    - yum-utils 
+    - iptables-services 
+    - bridge-utils 
+    - bash-completion 
+    - kexec-tools 
+    - sos 
+    - psacct 
