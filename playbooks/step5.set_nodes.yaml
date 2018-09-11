@@ -1,0 +1,9 @@
+---
+ - hosts: master node
+   roles:
+#      - hosts_check
+#      - set_yumrepo
+#      - set_chronyd
+      - docker_check
+      - set_docker
+      - set_nodes
