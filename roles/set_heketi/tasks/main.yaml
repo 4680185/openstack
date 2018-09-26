@@ -1,6 +1,9 @@
 ---
 - name: install heketi server software
-  yum: name=heketi state=present
+  yum: name={{ item }} state=present
+  with_items:
+    - heketi
+    - heketi-client
 
 - name: copy heketi.json file to heketi serve
   copy: src=heketi.json  dest=/etc/heketi/heketi.json owner=root group=root mode=0644
