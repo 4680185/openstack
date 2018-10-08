@@ -20,6 +20,12 @@
 - name: Modify hostname of the machine
   hostname: name={{ hostname }}.{{ host_domain }}
 
+- name: wget the harbor server rootca file
+  get_url: url=http://{{ groups['fileserver']| join( ) }}/harborrootca/ca.crt dest=/etc/pki/ca-trust/source/anchors/
+
+- name: restart docker
+  systemd: name=docker state=restarted enabled=yes masked=no
+
 - name: go to centos.yaml
   import_tasks: centos.yaml
   when: ansible_distribution == "CentOS"
