@@ -1,0 +1,18 @@
+{% for repoid in repoids %}
+{% if repoid == 'rhgs-3.3.1-rhel-7' %}
+[{{ repoid }}]
+name={{ repoid }}  
+baseurl=file:///var/www/html/{{ repopath }}/{{ repoid }}
+enable=0
+gpgcheck=0
+{% else %}
+
+[{{ repoid }}]
+name={{ repoid }}  
+baseurl=file:///var/www/html/{{ repopath }}/{{ repoid }}
+enable=1
+gpgcheck=0
+{% endif %}
+
+{% endfor %}
+

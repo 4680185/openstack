@@ -7,8 +7,19 @@
 
 - name: copy server.repo.j2 to {{ inventory_hostname }} 
   template: src=server.repo.j2  dest=/etc/yum.repos.d/server.repo mode=0644 owner=root group=root force=yes
-  when: inventory_hostname not in groups['fileserver']
+  when: inventory_hostname not in groups['fileserver'] and inventory_hostname in groups['glusterfs']
+
+- name: copy servernorhgs.repo.j2 to {{ inventory_hostname }}
+  template: src=servernorhgs.repo.j2  dest=/etc/yum.repos.d/server.repo mode=0644 owner=root group=root force=yes
+  when: inventory_hostname not in groups['fileserver'] and inventory_hostname not in groups['glusterfs']
 
 - name: copy local.repo to {{ inventory_hostname }} 
   template: src=local.repo.j2 dest=/etc/yum.repos.d/local.repo  mode=0644 owner=root group=root force=yes
-  when: inventory_hostname  in groups['fileserver']
+  when: inventory_hostname  in groups['fileserver'] and inventory_hostname in groups['glusterfs']
+
+
+- name: copy localnorhgs.repo to {{ inventory_hostname }}
+  template: src=localnorhgs.repo.j2 dest=/etc/yum.repos.d/local.repo  mode=0644 owner=root group=root force=yes
+  when: inventory_hostname  in groups['fileserver'] and inventory_hostname not in groups['glusterfs']
+
+
