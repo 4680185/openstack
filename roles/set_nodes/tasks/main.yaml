@@ -21,7 +21,7 @@
   hostname: name={{ hostname }}.{{ host_domain }}
 
 - name: go to centos.yaml
-  tasks: centos.yaml
+  import_tasks: centos.yaml
   when: ansible_distribution == "CentOS"
 
 - name: install base packages on the remote hosts
