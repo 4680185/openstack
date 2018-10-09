@@ -1,0 +1,9 @@
+prepend domain-name-servers {{ groups['dnsmasq']|first }};
+request subnet-mask,
+          broadcast-address,
+          routers,
+          host-name;
+require subnet-mask,
+          broadcast-address,
+          routers,
+          host-name;
