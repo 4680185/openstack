@@ -44,3 +44,12 @@
     - kexec-tools 
     - sos 
     - psacct 
+
+- name: install dhclient packages
+  yum: name=dhclient state=present
+
+- name: copy dhclient.conf to /etc/dhcp/
+  template: src=dhclient.conf.j2 dest=/etc/dhcp/dhclient.conf  owner=root  group=root mode=0644
+  notify:
+    - restart NetworkManager
+    - restart dnsmasq
