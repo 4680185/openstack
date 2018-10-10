@@ -19,10 +19,10 @@
                     "devices": [
 {% for disk in glusterfs_raw_disk %}
 {% if not loop.last %}
-                       "{{ disk }}",
+                       "/dev/{{ disk }}",
 {% endif %}
 {% if loop.last %}
-                       "{{ disk }}"
+                       "/dev/{{ disk }}"
 {% endif %}
 {% endfor %}
                     ]
@@ -44,10 +44,10 @@
                     "devices": [
 {% for disk in glusterfs_raw_disk %}
 {% if not loop.last %}
-                       "{{ disk }}",
+                       "/dev/{{ disk }}",
 {% endif %}
 {% if loop.last %}
-                       "{{ disk }}"
+                       "/dev/{{ disk }}"
 {% endif %}
 {% endfor %}
                     ]
