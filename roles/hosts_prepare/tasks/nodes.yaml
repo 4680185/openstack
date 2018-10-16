@@ -1,0 +1,9 @@
+---
+- name: enable selinux
+  selinux: state=enforcing policy=targeted
+  when: inventory_hostname in groups['nodes']
+  register: node_result
+
+- name: print node_result
+  debug: msg={{ node_result }}
+

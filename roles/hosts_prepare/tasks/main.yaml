@@ -1,0 +1,33 @@
+---
+- name: get host selinux value
+  shell: cat /etc/selinux/config  | grep -v '^#' | grep -w SELINUX
+  register: selinux
+
+- name: go to nodes.yaml
+  import_tasks: nodes.yaml
+  when: selinux.stdout == "SELINUX=disabled"
+
+- name: go to infra.yaml
+  import_tasks: infra.yaml
+  when: selinux.stdout != "SELINUX=disabled"
+
+- name: update  system to centos latest
+  yum: name="*" state=latest
+  when: ansible_distribution_version != "7.5.1804"
+  register: yum_result
+
+- name: reboot the system
+  reboot: connect_timeout=600 
+  when: node_result.changed == true  or  infra_result.changed == true or yum_result.changed == true
+
+- name: print zhangjunfeng
+  debug: msg="zhangjunfeng"
+
+- name: remove iptables-services software
+  yum: name=iptables-services state=absent
+
+- name: install firewalld software
+  yum: name=firewalld state=present
+
+- name: start firewalld service
+  systemd: name=firewalld state=started enabled=yes masked=no 

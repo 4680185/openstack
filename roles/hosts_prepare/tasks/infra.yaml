@@ -1,0 +1,9 @@
+---
+- name: disable selinux
+  selinux: state=disabled policy=targeted
+  when: inventory_hostname not in groups['nodes']
+  register: infra_result
+
+- name: print infra_result
+  debug: msg={{ infra_result }}
+
