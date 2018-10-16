@@ -1,6 +1,7 @@
 ---
  - hosts: master node
    roles:
+      - hosts_prepare
       - hosts_check
       - set_yumrepo
       - set_chronyd
