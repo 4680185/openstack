@@ -16,10 +16,22 @@
   when: ansible_distribution_version != "7.5.1804"
   register: yum_result
 
-- name: reboot the system
-  reboot: connect_timeout=600 
-  when: node_result.changed == true  or  infra_result.changed == true or yum_result.changed == true
+#- name: reboot the system
+#  reboot: connect_timeout=600 
+#  when: node_result.changed == true  or  infra_result.changed == true or yum_result.changed == true
 
+- name: Reboot hosts
+  shell: 'sleep  2 && shutdown -r now'
+  async: 1
+  poll: 0
+  ignore_errors: yes
+  when: node_result.changed == true  or  infra_result.changed == true or yum_result.changed == true
+  
+- name: watiing for server to come back 
+  become: false 
+  local_action: wait_for host={{ inventory_hostname }} port=22 search_regex=OpenSSH state=started delay=5
+  
+  
 - name: print zhangjunfeng
   debug: msg="zhangjunfeng"
 
