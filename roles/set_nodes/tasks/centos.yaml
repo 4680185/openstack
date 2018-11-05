@@ -3,7 +3,7 @@
   shell: yum  downgrade audit audit-libs -y
 
 - name: downgrade package dracut-network dracut dracut-config-rescue
-  shell yum  downgrade dracut-network dracut dracut-config-rescue -y
+  shell: yum  downgrade dracut-network dracut dracut-config-rescue -y
 
 - name: downgrade package kpartx
   shell: yum  downgrade kpartx -y 
