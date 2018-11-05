@@ -1,15 +1,15 @@
 ---
-- name: downgrade package audit and audit-libs
-  shell: yum  downgrade audit audit-libs -y
+#- name: downgrade package audit and audit-libs
+#  shell: yum  downgrade audit audit-libs -y
 
-- name: downgrade package dracut-network dracut dracut-config-rescue
-  shell: yum  downgrade dracut-network dracut dracut-config-rescue -y
+#- name: downgrade package dracut-network dracut dracut-config-rescue
+#  shell: yum  downgrade dracut-network dracut dracut-config-rescue -y
 
-- name: downgrade package kpartx
-  shell: yum  downgrade kpartx -y 
+#- name: downgrade package kpartx
+#  shell: yum  downgrade kpartx -y 
 
-- name: remove packages ntpdate bind-license
-  yum: name={{ item }} state=absent
-  with_items:
-    - ntpdate
-    - bind-license
+#- name: remove packages ntpdate bind-license
+#  yum: name={{ item }} state=absent
+#  with_items:
+#    - ntpdate
+#    - bind-license
