@@ -14,8 +14,6 @@
 - name: copy heketi.service to /usr/lib/systemd/system/heketi.service
   copy: src=heketi.service dest=/usr/lib/systemd/system/heketi.service owner=root group=root mode=0644
 
-- name: start heketi  service
-  systemd: name=heketi state=started enabled=yes masked=no
 
 - name: Find /etc/heketi files [heketi_key,heketi_key.pub]
   find: paths=/etc/heketi patterns='heketi_key*'
@@ -38,3 +36,6 @@
 
 - name: configure  firewalld policy
   firewalld: port=8080/tcp permanent=true state=enabled immediate=true
+  
+- name: start heketi  service
+  systemd: name=heketi state=started enabled=yes masked=no
