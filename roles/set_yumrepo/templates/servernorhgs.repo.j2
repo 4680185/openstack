@@ -1,10 +1,10 @@
 {% for repoid in repoids %}
 {% if repoid == 'rhgs-3.3.1-rhel-7' %}
-[{{ repoid }}]
-name={{ repoid }}  
-baseurl=http://{{ groups['fileserver'] | join( ) }}/{{ repopath }}/{{ repoid }}
-enable=0
-gpgcheck=0
+#[{{ repoid }}]
+#name={{ repoid }}  
+#baseurl=http://{{ groups['fileserver'] | join( ) }}/{{ repopath }}/{{ repoid }}
+#enable=0
+#gpgcheck=0
 {% else %}
 
 [{{ repoid }}]
